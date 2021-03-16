@@ -1,0 +1,6 @@
+region = "eu-west-1"
+# owner = 
+ami = "ami-047cfbb566fb4e2fa"
+# instance_type = 
+# project = 
+# pubkey_file =

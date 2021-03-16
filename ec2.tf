@@ -1,3 +1,14 @@
+resource "random_integer" "number" {
+  min = 10
+  max = 99
+}
+
+#add pubkey to AWS
+resource "aws_key_pair" "add_key" {
+  key_name   = "${var.project}-${random_integer.number.result}"
+  public_key = file(var.pub_key_file)
+}
+
 
 #create security groups
 resource "aws_security_group" "allow_all" {
@@ -25,7 +36,7 @@ resource "aws_security_group" "allow_all" {
 resource "aws_instance" "my_instance" {
   ami           = var.ami
   instance_type = var.instance_type
-  key_name      = var.key_name
+  key_name      = aws_key_pair.add_key.key_name
   subnet_id     = aws_subnet.public.id
   vpc_security_group_ids  = [ aws_security_group.allow_all.id ]
   associate_public_ip_address = true

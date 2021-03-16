@@ -1,3 +1,14 @@
-terraform.tfstate*
-old
-.terraform
+# ignore state files for now
+*.tfstate
+*.tfstate.backup
+
+# ignore module directory
+.terraform/
+.terraform*
+
+# ignore credentials
+/credentials.tf
+
+*.plan
+*.tfvars
+*.pem
