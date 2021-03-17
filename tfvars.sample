@@ -1,6 +1,7 @@
-region = "eu-west-1"
-# owner = 
-ami = "ami-047cfbb566fb4e2fa"
+# region = "eu-west-1"
+# owner =
+# if no ami specified, terraform will use the latest amz linux 2 ami 
+# ami = "ami-047cfbb566fb4e2fa"
 # instance_type = 
 # project = 
 # pubkey_file =

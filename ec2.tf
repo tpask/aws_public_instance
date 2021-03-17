@@ -34,13 +34,14 @@ resource "aws_security_group" "allow_all" {
 
 #create security bastian in public subnet
 resource "aws_instance" "my_instance" {
-  ami           = var.ami
+  ami = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
   instance_type = var.instance_type
   key_name      = aws_key_pair.add_key.key_name
   subnet_id     = aws_subnet.public.id
-  vpc_security_group_ids  = [ aws_security_group.allow_all.id ]
+  vpc_security_group_ids  = var.other_sg_ids == "" ? [ aws_security_group.allow_all.id ] : [ var.other_sg_ids, aws_security_group.allow_all.id ]
+  #vpc_security_group_ids  = [ aws_security_group.allow_all.id ]
   associate_public_ip_address = true
   tags = {
-    Name = "${var.owner}-aws_image_check"
+    Name = "${var.owner}-${var.project}"
   }
 }
