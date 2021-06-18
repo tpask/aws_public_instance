@@ -1,3 +1,4 @@
+# generate a random number
 resource "random_integer" "number" {
   min = 10
   max = 99
