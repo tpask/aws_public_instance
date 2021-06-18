@@ -19,7 +19,7 @@ variable "pub_key_file" {
 }
 
 #get my local address:
-data "http" "workstation-external-ip" { url = "http://ipv4.icanhazip.com" }
+data "http" "workstation-external-ip" { url = "http://ifconfig.me" }
 locals { workstation-external-cidr = "${chomp(data.http.workstation-external-ip.body)}/32" }
 
 # get the latest amazon-linux-2-ami 
