@@ -5,16 +5,16 @@ variable "owner" { default = "tp" }
 variable "ami" { default = "" }
 variable "instance_type" { default = "t3.small" }
 variable "other_sg_ids" {
-  type = string
+  type    = string
   default = ""
 }
 variable "project" {
-  type = string
+  type    = string
   default = "test"
 }
 
 variable "pub_key_file" {
-  type = string
+  type    = string
   default = "~/.ssh/id_rsa.pub"
 }
 
@@ -24,21 +24,39 @@ locals { workstation-external-cidr = "${chomp(data.http.workstation-external-ip.
 
 # get the latest amazon-linux-2-ami 
 data "aws_ami" "amz_linux" {
- most_recent = true
- owners = ["137112412989"]
- filter {
-  name   = "owner-alias"
-  values = ["amazon"]
- }
- filter {
-   name   = "name"
-   values = ["amzn2-ami-hvm*"]
- }
- filter {
+  most_recent = true
+  owners      = ["137112412989"]
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm*"]
+  }
+  filter {
     name   = "architecture"
     values = ["x86_64"]
- }
+  }
 }
+
+#ubuntu ami
+data "aws_ami" "ubuntu" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"]
+}
+
+#output "test" {
+#  value = data.aws_ami.ubuntu
+#}
 
 #define userdata to execute right after boot
 locals {
@@ -46,4 +64,9 @@ locals {
   #!/bin/bash
   yum -y update
 EOF
+}
+
+#define userdata 
+data "template_file" "user_data" {
+  template = file("./add-ssh-web-app.yaml")
 }

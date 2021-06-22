@@ -15,18 +15,18 @@ resource "aws_key_pair" "add_key" {
 resource "aws_security_group" "allow_all" {
   name        = "allow_all"
   description = "Allow all inbound connections from my workstaion"
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id      = aws_vpc.my_vpc.id
   ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = [ local.workstation-external-cidr ]
+    cidr_blocks = [local.workstation-external-cidr]
   }
   egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
     Name = "${var.owner} - allow all to my address only"
@@ -35,13 +35,13 @@ resource "aws_security_group" "allow_all" {
 
 #create security bastian in public subnet
 resource "aws_instance" "my_instance" {
-  ami = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
-  instance_type = var.instance_type
-  key_name      = aws_key_pair.add_key.key_name
-  subnet_id     = aws_subnet.public.id
-  vpc_security_group_ids  = var.other_sg_ids == "" ? [ aws_security_group.allow_all.id ] : [ var.other_sg_ids, aws_security_group.allow_all.id ]
-  #vpc_security_group_ids  = [ aws_security_group.allow_all.id ]
+  ami                         = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
+  instance_type               = var.instance_type
+  key_name                    = aws_key_pair.add_key.key_name
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = var.other_sg_ids == "" ? [aws_security_group.allow_all.id] : [var.other_sg_ids, aws_security_group.allow_all.id]
   associate_public_ip_address = true
+  user_data                   = data.template_file.user_data.rendered
   tags = {
     Name = "${var.owner}-${var.project}"
   }
