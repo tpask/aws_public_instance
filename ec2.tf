@@ -41,7 +41,7 @@ resource "aws_instance" "my_instance" {
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = var.other_sg_ids == "" ? [aws_security_group.allow_all.id] : [var.other_sg_ids, aws_security_group.allow_all.id]
   associate_public_ip_address = true
-  user_data                   = data.template_file.user_data.rendered
+#  user_data                   = data.template_file.user_data.rendered
   tags = {
     Name = "${var.owner}-${var.project}"
   }

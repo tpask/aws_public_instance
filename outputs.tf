@@ -1,3 +1,4 @@
-output "instance_ip_addr" { value = aws_instance.my_instance.public_ip }
+output "public_ip" { value = aws_instance.my_instance.public_ip }
 
-#terraform output -raw instance_ip_addr
+#terraform output -raw public_ip
+
