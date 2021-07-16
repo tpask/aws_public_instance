@@ -10,6 +10,11 @@ resource "aws_key_pair" "add_key" {
   public_key = file(var.pub_key_file)
 }
 
+module "instanceProfile" {
+  source  = "./modules/instanceProfile"
+  project = var.project
+  owner   = var.owner
+}
 
 #create security groups
 resource "aws_security_group" "allow_all" {
@@ -37,11 +42,11 @@ resource "aws_security_group" "allow_all" {
 resource "aws_instance" "my_instance" {
   count = var.numOfEc2
   #  ami                         = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
-  ami           = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
-  instance_type = var.instance_type
-  key_name      = aws_key_pair.add_key.key_name
-  subnet_id     = aws_subnet.public.id
-  #iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name ? aws_iam_instance_profile.ec2_profile.name : ""
+  ami                         = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
+  instance_type               = var.instance_type
+  key_name                    = aws_key_pair.add_key.key_name
+  subnet_id                   = aws_subnet.public.id
+  iam_instance_profile        = module.instanceProfile.instance_profile_name
   vpc_security_group_ids      = var.other_sg_ids == "" ? [aws_security_group.allow_all.id] : [var.other_sg_ids, aws_security_group.allow_all.id]
   associate_public_ip_address = true
   #  user_data                   = data.template_file.user_data.rendered

@@ -1,6 +1,9 @@
 # creates a role and attach it to your instance.
 # this is optional. Rename to .tf extension if you want to define a Role for your EC2(s)
+/*
+var.owner, var.project, 
 
+*/
 
 # create role:
 resource "aws_iam_role" "ec2_role" {
@@ -50,8 +53,5 @@ resource "aws_iam_role_policy" "ec2_policy" {
   ]
 }
 EOF
-
-
 }
 
-#create 

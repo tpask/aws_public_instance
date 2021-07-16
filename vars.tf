@@ -1,7 +1,11 @@
 provider "aws" { region = var.region }
 
+variable "includeEc2Role" {
+  default = true
+}
+
 variable "numOfEc2" {
-  default = 2
+  default = 1
 }
 variable "region" { default = "us-west-2" }
 variable "owner" { default = "tp" }
