@@ -1,4 +1,6 @@
-# creates a role
+# creates a role and attach it to your instance.
+# this is optional. Rename to .tf extension if you want to define a Role for your EC2(s)
+
 
 # create role:
 resource "aws_iam_role" "ec2_role" {
