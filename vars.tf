@@ -1,16 +1,19 @@
-provider "aws" { region = var.region }
+provider "aws" {
+  region = "us-west-2"
+}
 
 variable "region" { default = "us-west-2" }
 variable "owner" { default = "tp" }
 variable "ami" { default = "" }
 variable "instance_type" { default = "t3.small" }
+variable "volume_size" { default = "25" }
 variable "other_sg_ids" {
   type    = string
   default = ""
 }
 variable "project" {
   type    = string
-  default = "test"
+  default = "SecurityHub"
 }
 
 variable "pub_key_file" {
