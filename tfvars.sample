@@ -1,7 +1,9 @@
-# region = "eu-west-1"
-# owner =
-# if no ami specified, terraform will use the latest amz linux 2 ami 
+# region = "eu-west-2"
+# owner = Thien
 # ami = "ami-047cfbb566fb4e2fa"
-# instance_type = 
-# project = 
+# instance_type =
+# project =
 # pubkey_file =
+# vpc_cidr = "10.1.0.0/16"
+# public_subnet = "10.1.1.0/24"
+# private_nated_subnet = "10.1.2.0/24"

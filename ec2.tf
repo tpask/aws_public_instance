@@ -81,8 +81,8 @@ resource "aws_iam_role_policy" "role_policy" {
 EOF
 }
 
-#create security bastian in public subnet
-resource "aws_instance" "my_instance" {
+#create instance in private subnet subnet
+resource "aws_instance" "private_nated" {
   # ami                         = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
   ami                         = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
   instance_type               = var.instance_type
@@ -90,21 +90,44 @@ resource "aws_instance" "my_instance" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
   subnet_id                   = aws_subnet.public.id
   vpc_security_group_ids      = var.other_sg_ids == "" ? [aws_security_group.allow_all.id] : [var.other_sg_ids, aws_security_group.allow_all.id]
-  associate_public_ip_address = true
-  #  user_data                   = data.template_file.user_data.rendered
   # root disk
   root_block_device {
     volume_size           = var.volume_size
     volume_type           = "gp2"
   }
-
   tags = {
-    Name = "${var.owner}-${var.project}"
+    Name = "private - ${var.owner}-${var.project}"
   }
 }
 
+resource "aws_instance" "public" {
+  # ami                         = var.ami == "" ? data.aws_ami.ubuntu.id : var.ami
+  ami                         = var.ami == "" ? data.aws_ami.amz_linux.id : var.ami
+  instance_type               = var.instance_type
+  key_name                    = aws_key_pair.add_key.key_name
+  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  subnet_id                   = aws_subnet.private_nated.id
+  vpc_security_group_ids      = var.other_sg_ids == "" ? [aws_security_group.allow_all.id] : [var.other_sg_ids, aws_security_group.allow_all.id]
+  associate_public_ip_address = true
+  # root disk
+  root_block_device {
+    volume_size           = var.volume_size
+    volume_type           = "gp2"
+  }
+  tags = {
+    Name = "public - ${var.owner}-${var.project}"
+  }
+}
+
+/*
 # create EIP and associate it to instance
-resource "aws_eip" "lb" {
+resource "aws_eip" "eip_ec2" {
   instance = aws_instance.my_instance.id
   vpc = true
 }
+
+resource "aws_eip_association" "eip_assoc" {
+  allocation_id = aws_eip.eip_ec2.id
+  instance_id = aws_instance.my_instance.id
+}
+*/

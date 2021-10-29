@@ -1,7 +1,9 @@
 provider "aws" {
   region = "us-west-2"
 }
-
+variable "vpc_cidr" { default = "10.1.0.0/16" }
+variable "public_subnet" { default = "10.1.1.0/24" }
+variable "private_nated_subnet" { default = "10.1.2.0/24" }
 variable "region" { default = "us-west-2" }
 variable "owner" { default = "tp" }
 variable "ami" { default = "" }
@@ -13,7 +15,7 @@ variable "other_sg_ids" {
 }
 variable "project" {
   type    = string
-  default = "SecurityHub"
+  default = "test"
 }
 
 variable "pub_key_file" {
@@ -25,7 +27,7 @@ variable "pub_key_file" {
 data "http" "workstation-external-ip" { url = "http://ifconfig.me" }
 locals { workstation-external-cidr = "${chomp(data.http.workstation-external-ip.body)}/32" }
 
-# get the latest amazon-linux-2-ami 
+# get the latest amazon-linux-2-ami
 data "aws_ami" "amz_linux" {
   most_recent = true
   owners      = ["137112412989"]
@@ -67,9 +69,4 @@ locals {
   #!/bin/bash
   yum -y update
 EOF
-}
-
-#define userdata 
-data "template_file" "user_data" {
-  template = file("./add-ssh-web-app.yaml")
 }

@@ -1,20 +1,20 @@
 
 #create VPC
 resource "aws_vpc" "my_vpc" {
-  cidr_block           = "10.1.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
 
   tags = {
-    Name = "${var.owner} - VPC"
+    Name = "${var.owner}-${var.project}"
   }
 }
 
 #create public subnet
 resource "aws_subnet" "public" {
   vpc_id     = aws_vpc.my_vpc.id
-  cidr_block = "10.1.0.0/24"
+  cidr_block = var.public_subnet
   tags = {
-    Name = "${var.owner}-Public Subnet"
+    Name = "${var.owner}-${var.project}"
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_subnet" "public" {
 resource "aws_internet_gateway" "my_vpc_igw" {
   vpc_id = aws_vpc.my_vpc.id
   tags = {
-    Name = "${var.owner}- Internet Gateway"
+    Name = "${var.owner}-${var.project}"
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_route_table" "my_vpc_rt" {
     gateway_id = aws_internet_gateway.my_vpc_igw.id
   }
   tags = {
-    Name = "${var.owner} - Public Subnet Route Table."
+    Name = "${var.owner}-${var.project}"
   }
 }
 
@@ -43,3 +43,42 @@ resource "aws_route_table_association" "my_vpc" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.my_vpc_rt.id
 }
+
+# private subnet ***** w/ nat
+resource "aws_subnet" "private_nated" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = var.private_nated_subnet
+
+  tags = {
+    Name = "${var.owner}-${var.project}-NAT-ed Subnet"
+  }
+}
+
+
+resource "aws_eip" "nat_gw_eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "gw" {
+  allocation_id = aws_eip.nat_gw_eip.id
+  subnet_id     = aws_subnet.public.id
+}
+
+resource "aws_route_table" "my_vpc_nated" {
+    vpc_id = aws_vpc.my_vpc.id
+
+    route {
+        cidr_block = "0.0.0.0/0"
+        nat_gateway_id = aws_nat_gateway.gw.id
+    }
+
+    tags = {
+        Name = "${var.owner}-${var.project}-Main RT for NAT-ed subnet"
+    }
+}
+
+resource "aws_route_table_association" "my_vpc_nated" {
+    subnet_id = aws_subnet.private_nated.id
+    route_table_id = aws_route_table.my_vpc_nated.id
+}
+#see https://hands-on.cloud/terraform-managing-aws-vpc-creating-private-subnets/
