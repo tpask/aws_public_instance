@@ -1,9 +1,12 @@
-# region = "eu-west-2"
-# owner = Thien
-# ami = "ami-047cfbb566fb4e2fa"
-# instance_type =
-# project =
-# pubkey_file =
+# region = "us-west-2"
+# tfStatePath = "" #optional
+# owner = "Thien"
+# ami = "ami-047cfbb566fb4e2fa" #optional - will lookup if not defined
+# instance_type = "t3.micro" 
+# project = "test"
+# pubkey_file = ""
 # vpc_cidr = "10.1.0.0/16"
 # public_subnet = "10.1.1.0/24"
-# private_nated_subnet = "10.1.2.0/24"
+# private_nated_subnet = "10.1.2.0/24" #optional
+# volume_size = 25
+#
