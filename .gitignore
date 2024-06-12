@@ -9,6 +9,8 @@
 # ignore credentials
 /credentials.tf
 
+tfvars.tf
 *.plan
 *.tfvars
 *.pem
+backend.tf

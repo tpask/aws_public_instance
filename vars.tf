@@ -1,31 +1,31 @@
-provider "aws" {
-  region = "us-west-2"
-}
+provider "aws" { region = "us-west-2" }
+
 variable "vpc_cidr" { default = "10.1.0.0/16" }
 variable "public_subnet" { default = "10.1.1.0/24" }
 variable "private_nated_subnet" { default = "10.1.2.0/24" }
 variable "region" { default = "us-west-2" }
 variable "owner" { default = "tp" }
 variable "ami" { default = "" }
-variable "instance_type" { default = "t3.small" }
+variable "instance_type" { default = "t3.micro" }
 variable "volume_size" { default = "25" }
 variable "other_sg_ids" {
   type    = string
   default = ""
 }
+
 variable "project" {
   type    = string
   default = "test"
 }
 
-variable "pub_key_file" {
+variable "pubkey_file" {
   type    = string
   default = "~/.ssh/id_rsa.pub"
 }
 
 #get my local address:
+data "http" "my_ip" { url = "http://checkip.amazonaws.com/"}
 data "http" "workstation-external-ip" { url = "http://ifconfig.me" }
-locals { workstation-external-cidr = "${chomp(data.http.workstation-external-ip.body)}/32" }
 
 # get the latest amazon-linux-2-ami
 data "aws_ami" "amz_linux" {
